@@ -494,7 +494,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     public void checkForFontAndColors() {
         try {
             File colorsFile = TermuxConstants.TERMUX_COLOR_PROPERTIES_FILE;
-            File fontFile = TermuxConstants.TERMUX_FONT_FILE;
 
             final Properties props = new Properties();
             if (colorsFile.isFile()) {
@@ -509,11 +508,32 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
                 session.getEmulator().mColors.reset();
             }
             updateBackgroundColor();
-
-            final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
-            mActivity.getTerminalView().setTypeface(newTypeface);
+            checkFonts();
         } catch (Exception e) {
             Logger.logStackTraceWithMessage(LOG_TAG, "Error in checkForFontAndColors()", e);
+        }
+    }
+
+    private void checkFonts() {
+        File fontFile = TermuxConstants.TERMUX_FONT_FILE;
+        File italicFontFile = TermuxConstants.TERMUX_ITALIC_FONT_FILE;
+        File boldFontFile = TermuxConstants.TERMUX_BOLD_FONT_FILE;
+        File italicBoldFontFile = TermuxConstants.TERMUX_ITALIC_BOLD_FONT_FILE;
+
+        final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
+        mActivity.getTerminalView().setTypeface(newTypeface);
+
+        if (italicFontFile.exists() && italicFontFile.length() > 0) {
+            final Typeface newItalicTypeface = Typeface.createFromFile(italicFontFile);
+            mActivity.getTerminalView().setItalicTypeface(newItalicTypeface);
+        }
+        if (boldFontFile.exists() && boldFontFile.length() > 0) {
+            final Typeface newBoldTypeface = Typeface.createFromFile(boldFontFile);
+            mActivity.getTerminalView().setBoldTypeface(newBoldTypeface);
+        }
+        if (italicBoldFontFile.exists() && italicBoldFontFile.length() > 0) {
+            final Typeface newItalicBoldTypeface = Typeface.createFromFile(italicBoldFontFile);
+            mActivity.getTerminalView().setItalicBoldTypeface(newItalicBoldTypeface);
         }
     }
 
